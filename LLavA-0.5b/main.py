@@ -8,6 +8,7 @@ import sys
 import torch
 import json
 import glob
+import matplotlib.pyplot as plt
 from transformers import pipeline
 
 # Paths
@@ -20,7 +21,7 @@ with open(CAPTION_PATH, 'r') as file:
     captions = captions_metadata['annotations']
 
 
-# Load images
+# Load images and store the image ids and paths as dictionary
 image_path_dict = {}
 for image in glob.iglob(f'{IMAGE_PATH}/*.jpg'):
     image_id = image.split("/")[-1]
@@ -47,9 +48,11 @@ for i in range(5):
 
 # Output
 out = pipe(text=messages, max_new_tokens=20)
+responses = []
 for i in range(len(out)):
     generated_text = out[i][0]['generated_text']
     assistant_response = generated_text[-1]['content']
+    responses.append(assistant_response)
 
     print("-"*100)
     print(f"\nAssistant: {assistant_response}")
@@ -60,24 +63,3 @@ for i in range(len(out)):
         if caption['image_id'] == int(list(image_path_dict.keys())[i]):
             gt_captions.append(caption['caption'])
             print(f"\nGround truth caption: {caption['caption']}")
-
-
-# messages_1 = [
-#     {
-#       "role": "user",
-#       "content": [
-#           {"type": "image", "path": "/Users/tejasdhopavkar/fiftyone/coco-2017/validation/data/000000055528.jpg"},
-#           {"type": "text", "text": "Generate a caption for this image. Caption should be a one liner but descriptive enough"},
-#         ],
-#     },
-# ]
-
-# messages_2 = [
-#     {
-#       "role": "user",
-#       "content": [
-#           {"type": "image", "path": "/Users/tejasdhopavkar/fiftyone/coco-2017/validation/data/000000018491.jpg"},
-#           {"type": "text", "text": "Generate a caption for this image. Caption should be a one liner but descriptive enough"},
-#         ],
-#     },
-# ]
