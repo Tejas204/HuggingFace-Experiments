@@ -10,6 +10,7 @@ import json
 import glob
 import matplotlib.pyplot as plt
 from transformers import pipeline
+from config import FIFTYONE_COCO_CONFIG
 
 # Paths
 CAPTION_PATH = "/Users/tejasdhopavkar/fiftyone/coco-2017/raw/captions_val2017.json"
@@ -28,18 +29,20 @@ for image in glob.iglob(f'{IMAGE_PATH}/*.jpg'):
     image_id = image_id.lstrip('0')[:-4]
     image_path_dict[image_id] = image
 
+print(image_path_dict.values())
+
 # Model pipeline
 pipe = pipeline("image-text-to-text", model="llava-hf/llava-interleave-qwen-0.5b-hf")
 
 # Create messages
 messages = []
-for i in range(5):
+for i in range(1):
     message_input = [
         {
             "role": "user",
             "content": [
                 {"type": "image", "path": list(image_path_dict.values())[i]},
-                {"type": "text", "text": "Generate a caption for this image. Caption should be a one liner but descriptive enough"},
+                {"type": "text", "text": FIFTYONE_COCO_CONFIG["instruction"][1]},
         ],
         },
     ]
@@ -48,6 +51,7 @@ for i in range(5):
 
 # Output
 out = pipe(text=messages, max_new_tokens=20)
+print(out)
 responses = []
 for i in range(len(out)):
     generated_text = out[i][0]['generated_text']

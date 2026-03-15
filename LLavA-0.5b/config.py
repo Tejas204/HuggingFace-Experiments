@@ -7,5 +7,7 @@ FIFTYONE_COCO_CONFIG = dict(
     samples = 30,
     shuffle = True,
     split="validation", # available options: train, test, validation
-    label = ['detections', 'captions'] # available options: segmentations,  detections, captions
+    label = ['detections', 'captions'], # available options: segmentations,  detections, captions
+    instruction = ["Generate a caption for this image. Caption should be a one liner but descriptive enough", 
+                   "Generate bounding box coordinates for giraffe in the picture with zebras"]
 )
