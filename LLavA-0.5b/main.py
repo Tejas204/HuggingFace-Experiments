@@ -10,7 +10,12 @@ import json
 import glob
 import matplotlib.pyplot as plt
 from transformers import pipeline
+
+# Configs
 from config import FIFTYONE_COCO_CONFIG
+
+# utils
+from utils import build_bounding_box
 
 # Paths
 CAPTION_PATH = "/Users/tejasdhopavkar/fiftyone/coco-2017/raw/captions_val2017.json"
@@ -28,8 +33,6 @@ for image in glob.iglob(f'{IMAGE_PATH}/*.jpg'):
     image_id = image.split("/")[-1]
     image_id = image_id.lstrip('0')[:-4]
     image_path_dict[image_id] = image
-
-print(image_path_dict.values())
 
 # Model pipeline
 pipe = pipeline("image-text-to-text", model="llava-hf/llava-interleave-qwen-0.5b-hf")
@@ -50,13 +53,13 @@ for i in range(1):
 
 
 # Output
-out = pipe(text=messages, max_new_tokens=20)
-print(out)
+out = pipe(text=messages, max_new_tokens=30)
 responses = []
 for i in range(len(out)):
     generated_text = out[i][0]['generated_text']
     assistant_response = generated_text[-1]['content']
     responses.append(assistant_response)
+    build_bounding_box(assistant_response, list(image_path_dict.values())[0])
 
     print("-"*100)
     print(f"\nAssistant: {assistant_response}")
