@@ -45,7 +45,7 @@ for i in range(1):
             "role": "user",
             "content": [
                 {"type": "image", "path": list(image_path_dict.values())[i]},
-                {"type": "text", "text": FIFTYONE_COCO_CONFIG["instruction"][1]},
+                {"type": "text", "text": FIFTYONE_COCO_CONFIG["instruction"][2]},
         ],
         },
     ]
@@ -59,7 +59,7 @@ for i in range(len(out)):
     generated_text = out[i][0]['generated_text']
     assistant_response = generated_text[-1]['content']
     responses.append(assistant_response)
-    build_bounding_box(assistant_response, list(image_path_dict.values())[0])
+    # build_bounding_box(assistant_response, list(image_path_dict.values())[0])
 
     print("-"*100)
     print(f"\nAssistant: {assistant_response}")
